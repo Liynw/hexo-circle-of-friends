@@ -49,7 +49,7 @@ def all(start: int = 0, end: int = -1, rule: str = "updated"):
     """返回数据库统计信息和文章信息列表
     - start: 文章信息列表从 按rule排序后的顺序 的开始位置
     - end: 文章信息列表从 按rule排序后的顺序 的结束位置
-    - rule: 文章排序规则（创建时间/更新时间）
+    - rule: 文章排序规则（创建时间created/更新时间updated）
     """
     list_ = ['title', 'created', 'updated', 'link', 'author', 'avatar']
     return query_all(list_, start, end, rule)
@@ -345,6 +345,13 @@ async def crawler_status(payload: str = Depends(login_with_token_)):
             resp["message"] = "检查运行状态失败"
             resp["status"] = "未知"
     return format_response.standard_response(**resp)
+
+@app.delete("/db_reset", tags=["Manage"])
+async def db_reset(payload: str = Depends(login_with_token_)):
+    """
+    清空数据库中友链、文章表
+    """
+    return await db_reset_()
 
 
 if __name__ == "__main__":
